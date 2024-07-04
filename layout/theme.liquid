@@ -283,6 +283,30 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+
+    <script defer="defer" src="https://cdn.tailwindcss.com"></script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .swiper-product-carousel .swiper-pagination-bullet-active,
+        .swiper-product-carousel .swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
+          background: #000000;
+        }
+
+        .swiper-product-carousel .price {
+          font-size: 1.875rem;
+          line-height: 2.25rem;
+          margin-top: 0!important;
+        }
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">

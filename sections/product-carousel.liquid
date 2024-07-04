@@ -1,0 +1,163 @@
+{% liquid
+  assign padding_top = section.settings.padding_top
+  assign padding_bottom = section.settings.padding_bottom
+  assign padding_top_mobile = section.settings.padding_top_mobile
+  assign padding_bottom_mobile = section.settings.padding_bottom_mobile
+  assign title = section.settings.title | default: null
+  assign product_types = section.settings.product_types
+  assign product_list = section.settings.product_list | default: null
+  assign pagination = section.settings.pagination
+%}
+
+{% if product_types == 'custom' %}
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+<script src="{{ 'product-carousel.js' | asset_url }}" defer="defer" type="module"></script>
+
+<style>
+  #{{ section.id }}.section-padding {
+      padding-top: {{ padding_top_mobile }}px;
+      padding-bottom: {{ padding_bottom_mobile }}px;
+  }
+  @media (min-width: 768px) {
+      #{{ section.id }}.section-padding {
+          padding-top: {{ padding_top }}px;
+          padding-bottom: {{ padding_bottom }}px;
+      }
+  }
+</style>
+
+<product-carousel 
+  id="{{ section.id }}"
+  class="section-padding block"
+  {% if product_types == 'mockshop' %}
+    mockshop-products
+  {% endif %}
+>
+  <div class="grid grid-cols-12 px-8 md:px-[24px]">
+    <div class="col-span-full">
+      <h2 class="text-5xl">
+        {{ title }}
+      </h2>
+    </div>
+  </div>
+
+  <div class="swiper swiper-product-carousel pb-10 px-8 md:px-[24px]">
+    <div class="swiper-wrapper">
+      {% if product_types == 'custom' %}
+        {% for product in product_list %}
+          {% render 'card-product',
+            product_carousel: true,
+            card_product: product,
+            media_aspect_ratio: 'portrait',
+            extend_height: false,
+            classes: 'swiper-slide mb-4',
+            title_class: 'text-xl text-black mt-4 mb-1',
+            price_class: 'font-bold text-black flex mt-[0.7rem]'
+          %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% if pagination %}
+      <div class="swiper-pagination relative mt-4"></div>
+    {% endif %}
+  </div>
+</product-carousel>
+
+{% schema %}
+  {
+      "name": "Product carousel",
+      "class": "product-carousel",
+      "settings": [
+          {
+              "type": "header",
+              "content": "General settings"
+          },
+          {
+              "type": "range",
+              "id": "padding_top",
+              "label": "Padding top",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "px",
+              "default": 0
+          },
+          {
+              "type": "range",
+              "id": "padding_bottom",
+              "label": "Padding bottom",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "px",
+              "default": 0
+          },
+          {
+              "type": "range",
+              "id": "padding_top_mobile",
+              "label": "Padding top (Mobile)",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "px",
+              "default": 0
+          },
+          {
+              "type": "range",
+              "id": "padding_bottom_mobile",
+              "label": "Padding bottom (Mobile)",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "px",
+              "default": 0
+          },
+          {
+              "type": "header",
+              "content": "Section settings"
+          },
+          {
+              "type": "text",
+              "id": "title",
+              "label": "Title"
+          },
+          {
+            "type": "select",
+            "id": "product_types",
+            "label": "Product types",
+            "info": "Select the type of products you would like to display in the slider.",
+            "options": [
+              {
+                "value": "custom",
+                "label": "Custom products"
+              },
+              {
+                "value": "mockshop",
+                "label": "Mockshop products"
+              }
+            ],
+            "default": "mockshop"
+          },
+          {
+            "type": "product_list",
+            "id": "product_list",
+            "label": "Products",
+            "info": "The products selected here, will appear if 'Custom products' is selected as the 'Product Types'."
+          },
+          {
+            "type": "checkbox",
+            "id": "pagination",
+            "label": "Enable slider pagination.",
+            "default": false
+          }
+      ],
+      "presets": [
+          {
+              "name": "Product carousel"
+          }
+      ]
+  }
+{% endschema %}
